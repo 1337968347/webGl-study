@@ -30,16 +30,15 @@ const program = await initShaders(
   "./shaders/vertex.glsl",
   "./shaders/fragment.glsl"
 );
-gl.useProgram(program)
+gl.useProgram(program);
 
 const bufferId = gl.createBuffer();
 gl.bindBuffer(gl.ARRAY_BUFFER, bufferId);
 gl.bufferData(gl.ARRAY_BUFFER, flatten(points), gl.STATIC_DRAW);
 
-
-var vPosition = gl.getAttribLocation( program, "vPosition" );
-gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0 );
-gl.enableVertexAttribArray( vPosition );
+var vPosition = gl.getAttribLocation(program, "vPosition");
+gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);
+gl.enableVertexAttribArray(vPosition);
 
 gl.clear(gl.COLOR_BUFFER_BIT);
 gl.drawArrays(gl.POINTS, 0, points.length);
