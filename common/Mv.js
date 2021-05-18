@@ -52,3 +52,20 @@ const flatten = (v) => {
 
   return floats;
 };
+
+const mix = (u, v, s) => {
+  if (typeof s !== "number") {
+    throw "mix: the last paramter " + s + " must be a number";
+  }
+
+  if (u.length != v.length) {
+    throw "vector dimension mismatch";
+  }
+
+  var result = [];
+  for (var i = 0; i < u.length; ++i) {
+    result.push((1.0 - s) * u[i] + s * v[i]);
+  }
+
+  return result;
+};
