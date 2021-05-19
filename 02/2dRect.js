@@ -16,7 +16,6 @@ if (!gl) {
 gl.viewport(0, 0, canvas.width, canvas.height);
 gl.clearColor(1.0, 1.0, 1.0, 1.0);
 
-//  Load shaders and initialize attribute buffers
 
 const program = await initShaders(
   gl,
@@ -27,7 +26,6 @@ gl.useProgram(program);
 
 var vertices = [[0, 1], [-1, 0], [1, 0], [0, -1]];
 
-// Load the data into the GPU
 var bufferId = gl.createBuffer();
 gl.bindBuffer(gl.ARRAY_BUFFER, bufferId);
 gl.bufferData(gl.ARRAY_BUFFER, flatten(vertices), gl.STATIC_DRAW);
@@ -42,12 +40,11 @@ thetaLoc = gl.getUniformLocation(program, "theta");
 render();
 
 function render() {
-  gl.clear(gl.COLOR_BUFFER_BIT);
 
-  theta += 0.1;
+  theta += 0.01;
   gl.uniform1f(thetaLoc, theta);
 
-  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, vertices.length);
 
   requestAnimationFrame(render);
 }
