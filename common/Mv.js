@@ -1,3 +1,48 @@
+const vec2 = (...arguments) => {
+  var result = [...arguments];
+
+  switch (result.length) {
+    case 0:
+      result.push(0.0);
+    case 1:
+      result.push(0.0);
+  }
+
+  return result.splice(0, 2);
+};
+
+const vec3 = (...arguments) => {
+  var result = [...arguments];
+
+  switch (result.length) {
+    case 0:
+      result.push(0.0);
+    case 1:
+      result.push(0.0);
+    case 2:
+      result.push(0.0);
+  }
+
+  return result.splice(0, 3);
+};
+
+const vec4 = (...arguments) => {
+  var result = [...arguments];
+
+  switch (result.length) {
+    case 0:
+      result.push(0.0);
+    case 1:
+      result.push(0.0);
+    case 2:
+      result.push(0.0);
+    case 3:
+      result.push(1.0);
+  }
+
+  return result.splice(0, 4);
+};
+
 const add = (arr1, arr2) => {
   if (arr1.length !== arr2.length) {
     return -1;

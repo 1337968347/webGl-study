@@ -7,7 +7,7 @@ async function initShaders(gl, vertexPath, fragmentPath) {
     gl.compileShader(vShader)
 
     if (!gl.getShaderParameter(vShader, gl.COMPILE_STATUS)) {
-        console.error(`compileShader err : ${gl.getShaderInfoLog(vShader)} `)
+        console.error(`vertex compileShader err : ${gl.getShaderInfoLog(vShader)} `)
         return false
     }
 
@@ -19,7 +19,7 @@ async function initShaders(gl, vertexPath, fragmentPath) {
     gl.compileShader(fShader)
 
     if (!gl.getShaderParameter(fShader, gl.COMPILE_STATUS)) {
-        console.error(`compileShader err : ${gl.getShaderInfoLog(fShader)} `)
+        console.error(`fragment compileShader err : ${gl.getShaderInfoLog(fShader)} `)
         return false
     }
 
