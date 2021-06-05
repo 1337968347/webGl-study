@@ -118,7 +118,7 @@ function quad(a, b, c, d) {
 function render() {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-  theta[axis] += 2.0;
+  theta[axis] += 1.0;
   gl.uniform3fv(thetaLoc, theta);
 
   gl.drawArrays(gl.TRIANGLES, 0, points.length);

@@ -9,6 +9,8 @@ void main() {
    vec3 c = cos(angles);
    vec3 s = sin(angles);
 
+   mat4 CRM = mat4(1.0);
+
    mat4 rx = mat4(1.0, 0.0, 0.0, 0.0, 
                   0.0, c.x, s.x, 0.0,
                   0.0, -s.x, c.x, 0.0,
@@ -24,6 +26,21 @@ void main() {
                   0.0, 0.0, 1.0, 0.0,
                   0.0, 0.0, 0.0, 1.0);
 
-   gl_Position = vPosition * rx * ry * rz;
+   mat4 R = rx * ry * rz;
+
+   mat4 Scale =  mat4(0.2, 0.0, 0.0, 0.0, 
+                      0.0, 0.2, 0.0, 0.0,
+                      0.0, 0.0, 0.2, 0.0,
+                      0.0, 0.0, 0.0, 1.0);
+
+   // 观察 mat 
+   mat4 camera = mat4(-0.5, 0.0, 0.5 , 0.0, 
+                       0.0, 1.0, 0.0, 0.0,
+                      -0.5, 0.0, -0.5, 0.0,
+                       0.0, 0.0, 0.0, 1.0);
+
+   CRM = camera * R * Scale;
+
+   gl_Position = vPosition * CRM;
    fColor = vColor;
 }
