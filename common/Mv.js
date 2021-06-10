@@ -77,13 +77,13 @@ function mat3() {
     case 0:
       v[0] = 1;
     case 1:
-      m = [vec3(v[0], 0.0, 0.0), 
-           vec3(0.0, v[0], 0.0), 
-           vec3(0.0, 0.0, v[0])];
+      m = [vec3(v[0], 0.0, 0.0), vec3(0.0, v[0], 0.0), vec3(0.0, 0.0, v[0])];
       break;
     default:
-      m.push(vec3(v)); v.splice(0, 3);
-      m.push(vec3(v)); v.splice(0, 3);
+      m.push(vec3(v));
+      v.splice(0, 3);
+      m.push(vec3(v));
+      v.splice(0, 3);
       m.push(vec3(v));
       break;
   }
@@ -94,39 +94,42 @@ function mat3() {
 }
 
 function mat4() {
-    const v = [...arguments];
+  const v = [...arguments];
 
-    var m = [];
-    switch ( v.length ) {
+  var m = [];
+  switch (v.length) {
     case 0:
-        v[0] = 1;
+      v[0] = 1;
     case 1:
-        m = [
-            vec4( v[0], 0.0,  0.0,   0.0 ),
-            vec4( 0.0,  v[0], 0.0,   0.0 ),
-            vec4( 0.0,  0.0,  v[0],  0.0 ),
-            vec4( 0.0,  0.0,  0.0,  v[0] )
-        ];
-        break;
+      m = [
+        vec4(v[0], 0.0, 0.0, 0.0),
+        vec4(0.0, v[0], 0.0, 0.0),
+        vec4(0.0, 0.0, v[0], 0.0),
+        vec4(0.0, 0.0, 0.0, v[0]),
+      ];
+      break;
 
     default:
-        m.push( vec4(v) );  v.splice( 0, 4 );
-        m.push( vec4(v) );  v.splice( 0, 4 );
-        m.push( vec4(v) );  v.splice( 0, 4 );
-        m.push( vec4(v) );
-        break;
-    }
+      m.push(vec4(v));
+      v.splice(0, 4);
+      m.push(vec4(v));
+      v.splice(0, 4);
+      m.push(vec4(v));
+      v.splice(0, 4);
+      m.push(vec4(v));
+      break;
+  }
 
-    m.matrix = true;
+  m.matrix = true;
 
-    return m;
+  return m;
 }
 
 /**
  * 向量或矩阵 相加
- * @param {*} u 
- * @param {*} v 
- * @returns 
+ * @param {*} u
+ * @param {*} v
+ * @returns
  */
 function add(u, v) {
   var result = [];
@@ -166,9 +169,9 @@ function add(u, v) {
 
 /**
  * 向量或矩阵 相减
- * @param {*} u 
- * @param {*} v 
- * @returns 
+ * @param {*} u
+ * @param {*} v
+ * @returns
  */
 function subtract(u, v) {
   var result = [];
@@ -307,7 +310,7 @@ function equal(u, v) {
     }
   }
 
-  return true
+  return true;
 }
 
 // 叉乘
@@ -321,11 +324,36 @@ function cross(u, v) {
   }
 
   const result = [
-    u[1]*v[2] - u[2]*v[1],
-    u[2]*v[3] - u[3]*v[2],
-    u[3]*v[1] - u[1]*v[3]
-  ] 
-  return result 
+    u[1] * v[2] - u[2] * v[1],
+    u[2] * v[3] - u[3] * v[2],
+    u[3] * v[1] - u[1] * v[3],
+  ];
+  return result;
+}
+
+/**
+ * 向量的模
+ * @param {*} u
+ */
+function Length(u) {
+  Math.sqrt(dot(u * u));
+}
+
+/**
+ * 求归一化向量
+ */
+function normalize(u) {
+  // 向量的模长
+  const len = length(u);
+  if (!isFinite(len)) {
+    throw "vector 长度错误";
+  }
+
+  for (let i = 0; i < u.length; i++) {
+    u[i] /= len;
+  }
+
+  return u;
 }
 
 /**
@@ -333,7 +361,23 @@ function cross(u, v) {
  * @param {*} at 观察标架的 原点
  * @param {*} up 观察平面法向量
  * @param {*} eye 观察正向向量
+ * @returns 相机标架
  */
 function lookAt(at, up, eye) {
+  if (!Array.isArray(at) || at.length !== 3) {
+    throw "lookAt 第一个参数必须是 vec3";
+  }
+  if (!Array.isArray(up) || up.length !== 3) {
+    throw "lookAt 第二个参数必须是 vec3";
+  }
+  if (!Array.isArray(eye) || eye.length !== 3) {
+    throw "lookAt 第三个参数必须是 vec3";
+  }
 
+  if (equal(up, eye)) {
+    // 平面法向量 跟 观察正向向量 线性相关
+    return mat4();
+  }
+
+  const len = length();
 }
