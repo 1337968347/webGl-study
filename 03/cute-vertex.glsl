@@ -3,6 +3,7 @@ attribute vec4 vColor;
 varying vec4 fColor;
 
 uniform vec3 theta;
+uniform mat4 camera; 
 
 void main() {
    vec3 angles = radians(theta);
@@ -28,18 +29,12 @@ void main() {
 
    mat4 R = rx * ry * rz;
 
-   mat4 Scale =  mat4(0.2, 0.0, 0.0, 0.0, 
-                      0.0, 0.2, 0.0, 0.0,
-                      0.0, 0.0, 0.2, 0.0,
-                      0.0, 0.0, 0.0, 1.0);
+   // mat4 Scale =  mat4(0.2, 0.0, 0.0, 0.0, 
+   //                    0.0, 0.2, 0.0, 0.0,
+   //                    0.0, 0.0, 0.2, 0.0,
+   //                    0.0, 0.0, 0.0, 1.0);
 
-   // // 观察 mat 
-   // mat4 camera = mat4(-0.5, 0.0, 0.5 , 0.0, 
-   //                     0.0, 1.0, 0.0, 0.0,
-   //                    -0.5, 0.0, -0.5, 0.0,
-   //                     0.0, 0.0, 0.0, 1.0);
-
-   CRM = R * Scale;
+   CRM = camera * R ;
 
    gl_Position = vPosition * CRM;
    fColor = vColor;

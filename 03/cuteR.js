@@ -9,7 +9,7 @@ var axis = 0;
 var theta = [0, 0, 0];
 
 var thetaLoc;
-
+var cameraLoc;
 const canvas = document.querySelector("canvas");
 
 const gl = initWebGl(canvas);
@@ -49,6 +49,8 @@ gl.bufferData(gl.ARRAY_BUFFER, flatten(points), gl.STATIC_DRAW);
 var vPosition = gl.getAttribLocation(program, "vPosition");
 gl.vertexAttribPointer(vPosition, 4, gl.FLOAT, false, 0, 0);
 gl.enableVertexAttribArray(vPosition);
+
+cameraLoc = gl.getUniformLocation(program, "camera");
 
 thetaLoc = gl.getUniformLocation(program, "theta");
 
@@ -118,8 +120,14 @@ function quad(a, b, c, d) {
 function render() {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-  theta[axis] += 1.0;
+  // theta[axis] += 1.0;
+  const mat4Camera = flatten(lookAt(
+    vec3(0.0, 0.0, 0.0),
+    vec3(0, 0.0, 1.0),
+    vec3(0, 0, 1)
+  ));
   gl.uniform3fv(thetaLoc, theta);
+  gl.uniformMatrix4fv(cameraLoc, false, flatten(mat4Camera));
 
   gl.drawArrays(gl.TRIANGLES, 0, points.length);
 

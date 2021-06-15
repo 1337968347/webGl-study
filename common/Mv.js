@@ -1,8 +1,11 @@
 "use strict";
 
+function _argumentsToArray(args) {
+  return [].concat.apply([], Array.prototype.slice.apply(args));
+}
 // --------------- 向量 -----------------------
 function vec2() {
-  var result = [...arguments];
+  var result = _argumentsToArray(arguments);
 
   switch (result.length) {
     case 0:
@@ -15,7 +18,7 @@ function vec2() {
 }
 
 function vec3() {
-  var result = [...arguments];
+  var result = _argumentsToArray(arguments);
 
   switch (result.length) {
     case 0:
@@ -30,7 +33,7 @@ function vec3() {
 }
 
 function vec4() {
-  var result = [...arguments];
+  var result = _argumentsToArray(arguments);
 
   switch (result.length) {
     case 0:
@@ -48,7 +51,7 @@ function vec4() {
 
 // ---------------矩阵-------------------
 function mat2() {
-  const v = [...arguments];
+  const v = _argumentsToArray(arguments);
   let m = [];
 
   switch (v.length) {
@@ -70,7 +73,7 @@ function mat2() {
 }
 
 function mat3() {
-  const v = [...arguments];
+  const v = _argumentsToArray(arguments);
   let m = [];
 
   switch (v.length) {
@@ -94,7 +97,7 @@ function mat3() {
 }
 
 function mat4() {
-  const v = [...arguments];
+  const v = _argumentsToArray(arguments);
 
   var m = [];
   switch (v.length) {
@@ -213,6 +216,29 @@ function subtract(u, v) {
   }
 }
 
+/**
+ * 转置
+ * @param {*} m 矩阵
+ * @returns
+ */
+function transpose(m) {
+  if (!m.matrix) {
+    return "不是一个矩阵";
+  }
+
+  var result = [];
+  for (var i = 0; i < m.length; ++i) {
+    result.push([]);
+    for (var j = 0; j < m[i].length; ++j) {
+      result[i].push(m[j][i]);
+    }
+  }
+
+  result.matrix = true;
+
+  return result;
+}
+
 const scale = (s, arr) => {
   const result = [];
 
@@ -325,8 +351,8 @@ function cross(u, v) {
 
   const result = [
     u[1] * v[2] - u[2] * v[1],
-    u[2] * v[3] - u[3] * v[2],
-    u[3] * v[1] - u[1] * v[3],
+    u[2] * v[0] - u[0] * v[2],
+    u[0] * v[1] - u[1] * v[0],
   ];
   return result;
 }
@@ -336,7 +362,7 @@ function cross(u, v) {
  * @param {*} u
  */
 function Length(u) {
-  Math.sqrt(dot(u * u));
+  return Math.sqrt(dot(u, u));
 }
 
 /**
@@ -344,7 +370,7 @@ function Length(u) {
  */
 function normalize(u) {
   // 向量的模长
-  const len = length(u);
+  const len = Length(u);
   if (!isFinite(len)) {
     throw "vector 长度错误";
   }
@@ -358,12 +384,12 @@ function normalize(u) {
 
 /**
  * 通过指定 标架原点
- * @param {*} at 观察标架的 原点
+ * @param {*} eye 看向的点
+ * @param {*} at 在这个点上
  * @param {*} up 观察平面法向量
- * @param {*} eye 观察正向向量
  * @returns 相机标架
  */
-function lookAt(at, up, eye) {
+function lookAt(eye,at, up) {
   if (!Array.isArray(at) || at.length !== 3) {
     throw "lookAt 第一个参数必须是 vec3";
   }
@@ -379,5 +405,20 @@ function lookAt(at, up, eye) {
     return mat4();
   }
 
-  const len = length();
+  const n = normalize(subtract(eye, at)); // x
+  const v = normalize(cross(n, up)); // y
+  const p = normalize(cross(n, v)); // z
+
+  return mat4(
+    // -dot(n, eye))
+    // a*b = |a| |b| cosO
+    // |a| = 1  ;
+    // 所以  a * b = b * cosO
+    // a * b是eye 在新标架上的投影 。
+    // 表示原先标架 到 新标架的需要在三个坐标轴减去这些差值
+    vec4(n, -dot(n, eye)),
+    vec4(v, -dot(v, eye)),
+    vec4(p, -dot(p, eye)),
+    vec4()
+  );
 }
