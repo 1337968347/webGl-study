@@ -120,11 +120,9 @@ function quad(a, b, c, d) {
 function render() {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-  // theta[axis] += 1.0;
-  const mat4Camera = flatten(lookAt(
-    vec3(0.0, 0.0, 0.0),
-    vec3(0, 0.0, 1.0),
-    vec3(0, 0, 1)
+  theta[axis] += 1.0;
+  const mat4Camera = flatten(ortho(
+    -2,2,-2,2,-2,2
   ));
   gl.uniform3fv(thetaLoc, theta);
   gl.uniformMatrix4fv(cameraLoc, false, flatten(mat4Camera));

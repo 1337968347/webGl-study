@@ -389,7 +389,7 @@ function normalize(u) {
  * @param {*} up 观察平面法向量
  * @returns 相机标架
  */
-function lookAt(eye,at, up) {
+function lookAt(eye, at, up) {
   if (!Array.isArray(at) || at.length !== 3) {
     throw "lookAt 第一个参数必须是 vec3";
   }
@@ -421,4 +421,72 @@ function lookAt(eye,at, up) {
     vec4(p, -dot(p, eye)),
     vec4()
   );
+}
+
+/**
+ * 矩阵相乘
+ * @param {*} u 
+ * @param {*} v 
+ * @returns 
+ */
+function mult(u, v) {
+  var result = [];
+
+  if (u.matrix && v.matrix) {
+    if (u.length != v.length) {
+      throw "矩阵行数不同";
+    }
+
+    for (var i = 0; i < u.length; ++i) {
+      if (u[i].length != v[i].length) {
+        throw "矩阵列数不同";
+      }
+    }
+
+    for (var i = 0; i < u.length; ++i) {
+      result.push([]);
+
+      for (var j = 0; j < v.length; ++j) {
+        var sum = 0.0;
+        for (var k = 0; k < u.length; ++k) {
+          sum += u[i][k] * v[k][j];
+        }
+        result[i].push(sum);
+      }
+    }
+
+    result.matrix = true;
+
+    return result;
+  } else {
+    if (u.length != v.length) {
+      throw "向量维度不同";
+    }
+
+    for (var i = 0; i < u.length; ++i) {
+      result.push(u[i] * v[i]);
+    }
+
+    return result;
+  }
+}
+
+/**
+ * 规范化平行投影矩阵
+ * 将点变成[-1, 1]可视体内的点
+ * @param {*} left 
+ * @param {*} right
+ * @param {*} bottom
+ * @param {*} top
+ * @param {*} near
+ * @param {*} far
+ */
+function ortho(left, right, bottom, top, near, far) {
+  const w = right - left;
+  const h = top - bottom;
+  const d = far - near;
+  return mat4(2.0 / w, 0.0, 0.0, -1* (right+ left)/w,
+              0.0, 2.0 / h, 0.0, -1* (top + bottom)/h,
+              0.0, 0.0, -2.0 / d, -1* (far+ near)/d,
+              0.0, 0.0, 0.0, 1.0);
 }

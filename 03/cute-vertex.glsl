@@ -34,8 +34,13 @@ void main() {
    //                    0.0, 0.0, 0.2, 0.0,
    //                    0.0, 0.0, 0.0, 1.0);
 
-   CRM = camera * R ;
+    mat4 Scale =  mat4( 1.0, 0.0, 0.0, 0.0, 
+                        0.0, 1.0, 0.0, 0.0,
+                        0.0, 0.0, 0.0, 0.0,
+                        0.0, 0.0, 0.0, 1.0);
 
-   gl_Position = vPosition * CRM;
+   CRM =  camera * R;
+
+   gl_Position = Scale * CRM * vPosition;
    fColor = vColor;
 }
