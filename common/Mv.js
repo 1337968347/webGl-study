@@ -1,5 +1,4 @@
 "use strict";
-
 function _argumentsToArray(args) {
   return [].concat.apply([], Array.prototype.slice.apply(args));
 }
@@ -405,7 +404,7 @@ function lookAt(eye, at, up) {
     return mat4();
   }
 
-  const n = normalize(subtract(eye, at)); // x
+  const n = normalize(subtract(at, eye)); // x
   const v = normalize(cross(n, up)); // y
   const p = normalize(cross(n, v)); // z
 
@@ -416,18 +415,18 @@ function lookAt(eye, at, up) {
     // 所以  a * b = b * cosO
     // a * b是eye 在新标架上的投影 。
     // 表示原先标架 到 新标架的需要在三个坐标轴减去这些差值
-    vec4(n, -dot(n, eye)),
     vec4(v, -dot(v, eye)),
     vec4(p, -dot(p, eye)),
+    vec4(n, -dot(n, eye)),
     vec4()
   );
 }
 
 /**
  * 矩阵相乘
- * @param {*} u 
- * @param {*} v 
- * @returns 
+ * @param {*} u
+ * @param {*} v
+ * @returns
  */
 function mult(u, v) {
   var result = [];
@@ -474,7 +473,7 @@ function mult(u, v) {
 /**
  * 规范化平行投影矩阵
  * 将点变成[-1, 1]可视体内的点
- * @param {*} left 
+ * @param {*} left
  * @param {*} right
  * @param {*} bottom
  * @param {*} top
@@ -485,8 +484,28 @@ function ortho(left, right, bottom, top, near, far) {
   const w = right - left;
   const h = top - bottom;
   const d = far - near;
+  // prettier-ignore
   return mat4(2.0 / w, 0.0, 0.0, -1* (right+ left)/w,
               0.0, 2.0 / h, 0.0, -1* (top + bottom)/h,
               0.0, 0.0, -2.0 / d, -1* (far+ near)/d,
               0.0, 0.0, 0.0, 1.0);
+}
+
+function radians(degrees) {
+  return (degrees * Math.PI) / 180.0;
+}
+
+function perspective(fovy, aspect, near, far) {
+  var f = 1.0 / Math.tan(radians(fovy) / 2);
+  var d = far - near;
+
+  var result = mat4();
+  result[0][0] = f / aspect;
+  result[1][1] = f;
+  result[2][2] = (near + far) / d;
+  result[2][3] = (-2 * near * far) / d;
+  result[3][2] = 1;
+  result[3][3] = 0.0;
+
+  return result;
 }
